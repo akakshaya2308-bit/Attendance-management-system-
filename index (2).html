@@ -1,0 +1,655 @@
+<!doctype doctype>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attendance Management System</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100%;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 2.5em;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      font-size: 1.1em;
+      opacity: 0.95;
+    }
+
+    .controls {
+      padding: 25px 30px;
+      background: #f8f9fa;
+      border-bottom: 2px solid #e9ecef;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .control-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .control-group label {
+      font-weight: 600;
+      color: #495057;
+      font-size: 0.95em;
+    }
+
+    input[type="date"] {
+      padding: 10px 15px;
+      border: 2px solid #dee2e6;
+      border-radius: 8px;
+      font-size: 1em;
+      transition: all 0.3s;
+    }
+
+    input[type="date"]:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-reset {
+      background: #dc3545;
+      color: white;
+    }
+
+    .btn-reset:hover {
+      background: #c82333;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+    }
+
+    .btn-export {
+      background: #28a745;
+      color: white;
+    }
+
+    .btn-export:hover {
+      background: #218838;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      padding: 25px 30px;
+      background: white;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 20px;
+      border-radius: 12px;
+      color: white;
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 0.9em;
+      opacity: 0.9;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 2em;
+      font-weight: 700;
+    }
+
+    .attendance-table-wrapper {
+      padding: 30px;
+      overflow-x: auto;
+    }
+
+    .attendance-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    .attendance-table thead {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: #495057;
+      color: white;
+    }
+
+    .attendance-table th {
+      padding: 15px 10px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 0.95em;
+      border: 1px solid #dee2e6;
+    }
+
+    .attendance-table td {
+      padding: 12px 8px;
+      text-align: center;
+      border: 1px solid #dee2e6;
+    }
+
+    .attendance-table tbody tr:nth-child(even) {
+      background: #f8f9fa;
+    }
+
+    .attendance-table tbody tr:hover {
+      background: #e9ecef;
+    }
+
+    .student-id {
+      font-weight: 600;
+      color: #495057;
+    }
+
+    .hour-btn {
+      width: 60px;
+      height: 40px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85em;
+      transition: all 0.2s;
+      text-transform: uppercase;
+    }
+
+    .hour-btn.present {
+      background: #28a745;
+      color: white;
+    }
+
+    .hour-btn.absent {
+      background: #dc3545;
+      color: white;
+    }
+
+    .hour-btn.unmarked {
+      background: #e9ecef;
+      color: #6c757d;
+    }
+
+    .hour-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .student-percentage {
+      font-weight: 600;
+      padding: 8px;
+      border-radius: 6px;
+    }
+
+    .percentage-high {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .percentage-medium {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .percentage-low {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 1.8em;
+      }
+
+      .controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .control-group {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .attendance-table-wrapper {
+        padding: 15px;
+      }
+
+      .hour-btn {
+        width: 50px;
+        height: 35px;
+        font-size: 0.75em;
+      }
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <div class="container">
+   <div class="header">
+    <h1 id="page-title">Attendance Management System</h1>
+    <p id="institution-name">College Attendance Tracker</p>
+   </div>
+   <div class="controls">
+    <div class="control-group"><label for="attendance-date">Select Date:</label> <input type="date" id="attendance-date">
+    </div><button class="btn btn-reset" id="reset-btn">🔄 Reset Today</button> <button class="btn btn-export" id="export-btn">📊 Export CSV</button>
+   </div>
+   <div class="stats">
+    <div class="stat-card">
+     <div class="stat-label">
+      Total Students
+     </div>
+     <div class="stat-value" id="total-students">
+      61
+     </div>
+    </div>
+    <div class="stat-card">
+     <div class="stat-label">
+      Total Hours
+     </div>
+     <div class="stat-value" id="total-hours">
+      366
+     </div>
+    </div>
+    <div class="stat-card">
+     <div class="stat-label">
+      Hours Present
+     </div>
+     <div class="stat-value" id="hours-present">
+      0
+     </div>
+    </div>
+    <div class="stat-card">
+     <div class="stat-label">
+      Attendance %
+     </div>
+     <div class="stat-value" id="attendance-percentage">
+      0%
+     </div>
+    </div>
+   </div>
+   <div class="attendance-table-wrapper">
+    <table class="attendance-table">
+     <thead>
+      <tr>
+       <th>Register No.</th>
+       <th>Hour 1</th>
+       <th>Hour 2</th>
+       <th>Hour 3</th>
+       <th>Hour 4</th>
+       <th>Hour 5</th>
+       <th>Hour 6</th>
+       <th>Attendance %</th>
+      </tr>
+     </thead>
+     <tbody id="attendance-tbody"><!-- Student rows will be generated here -->
+     </tbody>
+    </table>
+   </div>
+  </div>
+  <script>
+    const defaultConfig = {
+      page_title: "Attendance Management System",
+      institution_name: "College Attendance Tracker"
+    };
+
+    // Constants
+    const TOTAL_STUDENTS = 61;
+    const TOTAL_HOURS = 6;
+    const START_REGISTER = 101;
+    const END_REGISTER = 161;
+
+    // Initialize date input with today's date
+    const dateInput = document.getElementById('attendance-date');
+    dateInput.valueAsDate = new Date();
+
+    // Initialize attendance data structure
+    let currentDate = dateInput.value;
+
+    // Load attendance from localStorage
+    function loadAttendance(date) {
+      const saved = localStorage.getItem(`attendance_${date}`);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+      
+      // Initialize empty attendance for all students
+      const attendance = {};
+      for (let i = START_REGISTER; i <= END_REGISTER; i++) {
+        attendance[i] = Array(TOTAL_HOURS).fill(null); // null = unmarked, true = present, false = absent
+      }
+      return attendance;
+    }
+
+    // Save attendance to localStorage
+    function saveAttendance(date, data) {
+      localStorage.setItem(`attendance_${date}`, JSON.stringify(data));
+    }
+
+    // Current attendance data
+    let attendanceData = loadAttendance(currentDate);
+
+    // Generate attendance table rows
+    function generateTable() {
+      const tbody = document.getElementById('attendance-tbody');
+      tbody.innerHTML = '';
+
+      for (let regNo = START_REGISTER; regNo <= END_REGISTER; regNo++) {
+        const tr = document.createElement('tr');
+        
+        // Register number cell
+        const tdRegNo = document.createElement('td');
+        tdRegNo.className = 'student-id';
+        tdRegNo.textContent = regNo;
+        tr.appendChild(tdRegNo);
+
+        // Hour cells
+        for (let hour = 0; hour < TOTAL_HOURS; hour++) {
+          const td = document.createElement('td');
+          const btn = document.createElement('button');
+          btn.className = 'hour-btn';
+          btn.dataset.regNo = regNo;
+          btn.dataset.hour = hour;
+          
+          updateButtonState(btn, attendanceData[regNo][hour]);
+          
+          btn.addEventListener('click', () => {
+            toggleAttendance(regNo, hour, btn);
+          });
+          
+          td.appendChild(btn);
+          tr.appendChild(td);
+        }
+
+        // Student percentage cell
+        const tdPercentage = document.createElement('td');
+        tdPercentage.className = 'student-percentage';
+        tdPercentage.id = `student-${regNo}-percentage`;
+        updateStudentPercentage(regNo, tdPercentage);
+        tr.appendChild(tdPercentage);
+
+        tbody.appendChild(tr);
+      }
+
+      updateStats();
+    }
+
+    // Update button appearance based on state
+    function updateButtonState(btn, state) {
+      if (state === true) {
+        btn.className = 'hour-btn present';
+        btn.textContent = 'P';
+      } else if (state === false) {
+        btn.className = 'hour-btn absent';
+        btn.textContent = 'A';
+      } else {
+        btn.className = 'hour-btn unmarked';
+        btn.textContent = '-';
+      }
+    }
+
+    // Toggle attendance for a student's hour
+    function toggleAttendance(regNo, hour, btn) {
+      const currentState = attendanceData[regNo][hour];
+      
+      // Cycle through: unmarked -> present -> absent -> unmarked
+      if (currentState === null) {
+        attendanceData[regNo][hour] = true; // Present
+      } else if (currentState === true) {
+        attendanceData[regNo][hour] = false; // Absent
+      } else {
+        attendanceData[regNo][hour] = null; // Unmarked
+      }
+
+      updateButtonState(btn, attendanceData[regNo][hour]);
+      saveAttendance(currentDate, attendanceData);
+      
+      // Update student percentage
+      const percentageCell = document.getElementById(`student-${regNo}-percentage`);
+      updateStudentPercentage(regNo, percentageCell);
+      
+      updateStats();
+    }
+
+    // Update student's individual percentage
+    function updateStudentPercentage(regNo, cell) {
+      const studentHours = attendanceData[regNo];
+      const presentCount = studentHours.filter(h => h === true).length;
+      const totalMarked = studentHours.filter(h => h !== null).length;
+      
+      if (totalMarked === 0) {
+        cell.textContent = '-';
+        cell.className = 'student-percentage';
+        return;
+      }
+
+      const percentage = ((presentCount / totalMarked) * 100).toFixed(1);
+      cell.textContent = `${percentage}%`;
+      
+      // Color code based on percentage
+      if (percentage >= 75) {
+        cell.className = 'student-percentage percentage-high';
+      } else if (percentage >= 50) {
+        cell.className = 'student-percentage percentage-medium';
+      } else {
+        cell.className = 'student-percentage percentage-low';
+      }
+    }
+
+    // Update overall statistics
+    function updateStats() {
+      let totalPresent = 0;
+      let totalMarked = 0;
+
+      for (let regNo = START_REGISTER; regNo <= END_REGISTER; regNo++) {
+        for (let hour = 0; hour < TOTAL_HOURS; hour++) {
+          if (attendanceData[regNo][hour] !== null) {
+            totalMarked++;
+            if (attendanceData[regNo][hour] === true) {
+              totalPresent++;
+            }
+          }
+        }
+      }
+
+      const totalPossibleHours = TOTAL_STUDENTS * TOTAL_HOURS;
+      const overallPercentage = totalMarked > 0 ? ((totalPresent / totalMarked) * 100).toFixed(1) : 0;
+
+      document.getElementById('total-students').textContent = TOTAL_STUDENTS;
+      document.getElementById('total-hours').textContent = totalPossibleHours;
+      document.getElementById('hours-present').textContent = totalPresent;
+      document.getElementById('attendance-percentage').textContent = `${overallPercentage}%`;
+    }
+
+    // Reset attendance for current date
+    document.getElementById('reset-btn').addEventListener('click', () => {
+      const confirmReset = document.createElement('div');
+      confirmReset.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); z-index: 1000; text-align: center;';
+      confirmReset.innerHTML = `
+        <h3 style="margin-bottom: 15px; color: #dc3545;">Reset Attendance?</h3>
+        <p style="margin-bottom: 20px; color: #6c757d;">This will clear all attendance data for ${currentDate}</p>
+        <button id="confirm-reset" class="btn btn-reset" style="margin-right: 10px;">Yes, Reset</button>
+        <button id="cancel-reset" class="btn" style="background: #6c757d; color: white;">Cancel</button>
+      `;
+      
+      const overlay = document.createElement('div');
+      overlay.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999;';
+      
+      document.body.appendChild(overlay);
+      document.body.appendChild(confirmReset);
+      
+      document.getElementById('confirm-reset').addEventListener('click', () => {
+        attendanceData = loadAttendance(currentDate);
+        for (let regNo = START_REGISTER; regNo <= END_REGISTER; regNo++) {
+          attendanceData[regNo] = Array(TOTAL_HOURS).fill(null);
+        }
+        saveAttendance(currentDate, attendanceData);
+        generateTable();
+        document.body.removeChild(overlay);
+        document.body.removeChild(confirmReset);
+      });
+      
+      document.getElementById('cancel-reset').addEventListener('click', () => {
+        document.body.removeChild(overlay);
+        document.body.removeChild(confirmReset);
+      });
+    });
+
+    // Export to CSV
+    document.getElementById('export-btn').addEventListener('click', () => {
+      let csv = 'Register No,Hour 1,Hour 2,Hour 3,Hour 4,Hour 5,Hour 6,Attendance %\n';
+      
+      for (let regNo = START_REGISTER; regNo <= END_REGISTER; regNo++) {
+        const row = [regNo];
+        const studentHours = attendanceData[regNo];
+        
+        // Add hour status
+        for (let hour = 0; hour < TOTAL_HOURS; hour++) {
+          const state = studentHours[hour];
+          row.push(state === true ? 'P' : state === false ? 'A' : '-');
+        }
+        
+        // Calculate percentage
+        const presentCount = studentHours.filter(h => h === true).length;
+        const totalMarked = studentHours.filter(h => h !== null).length;
+        const percentage = totalMarked > 0 ? ((presentCount / totalMarked) * 100).toFixed(1) : 0;
+        row.push(`${percentage}%`);
+        
+        csv += row.join(',') + '\n';
+      }
+      
+      // Add summary row
+      let totalPresent = 0;
+      let totalMarked = 0;
+      for (let regNo = START_REGISTER; regNo <= END_REGISTER; regNo++) {
+        for (let hour = 0; hour < TOTAL_HOURS; hour++) {
+          if (attendanceData[regNo][hour] !== null) {
+            totalMarked++;
+            if (attendanceData[regNo][hour] === true) {
+              totalPresent++;
+            }
+          }
+        }
+      }
+      const overallPercentage = totalMarked > 0 ? ((totalPresent / totalMarked) * 100).toFixed(1) : 0;
+      csv += `\nOverall Stats,,,,,,,\n`;
+      csv += `Total Students,${TOTAL_STUDENTS},,,,,,\n`;
+      csv += `Total Hours Conducted,${totalMarked},,,,,,\n`;
+      csv += `Total Hours Present,${totalPresent},,,,,,\n`;
+      csv += `Overall Attendance %,${overallPercentage}%,,,,,,\n`;
+      
+      // Download CSV
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `attendance_${currentDate}.csv`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
+
+    // Date change handler
+    dateInput.addEventListener('change', (e) => {
+      currentDate = e.target.value;
+      attendanceData = loadAttendance(currentDate);
+      generateTable();
+    });
+
+    // Element SDK implementation
+    async function onConfigChange(config) {
+      const titleElement = document.getElementById('page-title');
+      const institutionElement = document.getElementById('institution-name');
+      
+      titleElement.textContent = config.page_title || defaultConfig.page_title;
+      institutionElement.textContent = config.institution_name || defaultConfig.institution_name;
+    }
+
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [],
+        borderables: [],
+        fontEditable: undefined,
+        fontSizeable: undefined
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ["page_title", config.page_title || defaultConfig.page_title],
+        ["institution_name", config.institution_name || defaultConfig.institution_name]
+      ]);
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    }
+
+    // Initialize table on load
+    generateTable();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9ba0d1d826d56eef',t:'MTc2Nzc2MTI3NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
