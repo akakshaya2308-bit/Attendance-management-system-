@@ -1,655 +1,3699 @@
-<!doctype doctype>
+<!DOCTYPE html>
 <html lang="en">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Attendance Management System</title>
-  <script src="/_sdk/element_sdk.js"></script>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Attendance Management System</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    min-height: 100%;
+}
+
+body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1e3c72, #2a5298, #7e22ce);
+    min-height: 100vh;
+    padding: 20px;
+    color: #212529;
+}
+
+button,
+input {
+    font-family: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.container {
+    max-width: 1600px;
+    margin: auto;
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 25px 70px rgba(0, 0, 0, .35);
+}
+
+/* ================= HEADER ================= */
+
+.header {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
+    padding: 35px 30px;
+    text-align: center;
+    border-bottom: 4px solid #7e22ce;
+}
+
+.header h1 {
+    font-size: 2.7rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.header p {
+    font-size: 1.1rem;
+    opacity: .9;
+}
+
+/* ================= PRIVACY INFO ================= */
+
+.privacy-info {
+    background: #eef7ff;
+    color: #24527a;
+    padding: 12px 20px;
+    text-align: center;
+    font-size: .9rem;
+    border-bottom: 1px solid #d7e9f7;
+}
+
+/* ================= SETTINGS ================= */
+
+.settings {
+    background: #f8f9fa;
+    padding: 20px 30px;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.settings-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 15px;
+}
+
+.setting-box {
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .08);
+}
+
+.setting-box label {
+    display: block;
+    font-weight: 700;
+    color: #1e3c72;
+    margin-bottom: 7px;
+}
+
+.setting-box input {
+    width: 100%;
+    padding: 11px 13px;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.setting-box input:focus {
+    outline: none;
+    border-color: #2a5298;
+}
+
+/* ================= CONTROLS ================= */
+
+.controls {
+    padding: 20px 30px;
+    background: linear-gradient(to right, #f8f9fa, #e9ecef);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.control-left,
+.control-right {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.date-box {
+    background: white;
+    padding: 8px 12px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .08);
+}
+
+.date-box label {
+    font-weight: 700;
+    color: #1e3c72;
+}
+
+.date-box input {
+    padding: 9px 12px;
+    border: 2px solid #2a5298;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+/* ================= BUTTONS ================= */
+
+.btn {
+    border: none;
+    padding: 11px 18px;
+    border-radius: 9px;
+    color: white;
+    font-weight: 700;
+    font-size: .9rem;
+    transition: .25s;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, .2);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #28a745, #218838);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, #f59f00, #e67700);
+}
+
+.btn-secondary {
+    background: #6c757d;
+}
+
+.btn-dark {
+    background: #343a40;
+}
+
+/* ================= STUDENT MANAGEMENT ================= */
+
+.student-management {
+    background: #ffffff;
+    padding: 25px 30px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.management-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 18px;
+}
+
+.management-header h2 {
+    color: #1e3c72;
+    font-size: 1.35rem;
+}
+
+.management-header p {
+    color: #6c757d;
+    font-size: .9rem;
+}
+
+.student-form {
+    display: grid;
+    grid-template-columns: 1fr 2fr auto auto;
+    gap: 12px;
+    align-items: end;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: #343a40;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 11px 13px;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #2a5298;
+}
+
+.form-button {
+    height: 44px;
+}
+
+.cancel-edit-btn {
+    display: none;
+}
+
+/* ================= STATS ================= */
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 18px;
+    padding: 25px 30px;
+    background: #f8f9fa;
+}
+
+.stat-card {
+    padding: 22px;
+    border-radius: 15px;
+    text-align: center;
+    color: white;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    box-shadow: 0 7px 20px rgba(102, 126, 234, .25);
+}
+
+.stat-label {
+    font-size: .85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .7px;
+    opacity: .9;
+    margin-bottom: 8px;
+}
+
+.stat-value {
+    font-size: 2.2rem;
+    font-weight: 900;
+}
+
+/* ================= TABLE ================= */
+
+.table-wrapper {
+    padding: 30px;
+    overflow-x: auto;
+}
+
+.attendance-table {
+    width: 100%;
+    min-width: 1000px;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, .1);
+}
+
+.attendance-table thead {
+    background: linear-gradient(135deg, #2c3e50, #34495e);
+    color: white;
+}
+
+.attendance-table th {
+    padding: 16px 10px;
+    text-align: center;
+    font-size: .9rem;
+    border: 1px solid rgba(255, 255, 255, .1);
+    white-space: nowrap;
+}
+
+.attendance-table th:nth-child(1),
+.attendance-table th:nth-child(2) {
+    text-align: left;
+    padding-left: 18px;
+}
+
+.attendance-table td {
+    padding: 12px 10px;
+    text-align: center;
+    border: 1px solid #e9ecef;
+}
+
+.attendance-table tbody tr:nth-child(even) {
+    background: #f8f9fa;
+}
+
+.attendance-table tbody tr:hover {
+    background: #e3f2fd;
+}
+
+.student-id {
+    font-weight: 800;
+    color: #2a5298;
+    white-space: nowrap;
+}
+
+.student-name {
+    text-align: left !important;
+    font-weight: 600;
+    min-width: 180px;
+}
+
+.hour-btn {
+    width: 55px;
+    height: 42px;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    font-weight: 800;
+    transition: .2s;
+}
+
+.hour-btn:hover {
+    transform: scale(1.08);
+}
+
+.present {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    border-color: #1e7e34;
+}
+
+.absent {
+    background: linear-gradient(135deg, #dc3545, #e83e8c);
+    color: white;
+    border-color: #bd2130;
+}
+
+.unmarked {
+    background: #e9ecef;
+    color: #6c757d;
+    border-color: #dee2e6;
+}
+
+.percentage {
+    font-weight: 800;
+    padding: 9px;
+    border-radius: 7px;
+}
+
+.high {
+    background: #d4edda;
+    color: #155724;
+}
+
+.medium {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.low {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+}
+
+.small-btn {
+    border: none;
+    padding: 7px 9px;
+    border-radius: 7px;
+    color: white;
+    font-weight: 700;
+    transition: .2s;
+}
+
+.small-btn:hover {
+    transform: translateY(-1px);
+}
+
+.edit-btn {
+    background: #007bff;
+}
+
+.delete-btn {
+    background: #dc3545;
+}
+
+/* ================= EMPTY STATE ================= */
+
+.empty-state {
+    text-align: center;
+    padding: 70px 20px;
+    color: #6c757d;
+}
+
+.empty-state-icon {
+    font-size: 4rem;
+    margin-bottom: 15px;
+}
+
+.empty-state h2 {
+    color: #343a40;
+    margin-bottom: 8px;
+}
+
+.empty-state p {
+    margin-bottom: 20px;
+}
+
+/* ================= MODAL ================= */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px;
+}
+
+.modal {
+    background: white;
+    width: 100%;
+    max-width: 480px;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, .35);
+}
+
+.modal h2 {
+    margin-bottom: 15px;
+    color: #1e3c72;
+}
+
+.modal-description {
+    color: #6c757d;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* ================= TOAST ================= */
+
+.toast {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    background: #212529;
+    color: white;
+    padding: 14px 20px;
+    border-radius: 10px;
+    box-shadow: 0 7px 25px rgba(0, 0, 0, .3);
+    z-index: 10000;
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
+    transition: .3s;
+    max-width: 350px;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ================= FOOTER ================= */
+
+.footer {
+    padding: 18px 30px;
+    text-align: center;
+    background: #f8f9fa;
+    color: #6c757d;
+    font-size: .85rem;
+    border-top: 1px solid #dee2e6;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 1100px) {
+
+    .settings-grid {
+        grid-template-columns: 1fr 1fr;
     }
 
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100%;
-      padding: 20px;
-      box-sizing: border-box;
-    }
-
-    html, body {
-      height: 100%;
-      overflow-x: hidden;
-    }
-
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-      overflow: hidden;
-    }
-
-    .header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 30px;
-      text-align: center;
-    }
-
-    .header h1 {
-      font-size: 2.5em;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .header p {
-      font-size: 1.1em;
-      opacity: 0.95;
-    }
-
-    .controls {
-      padding: 25px 30px;
-      background: #f8f9fa;
-      border-bottom: 2px solid #e9ecef;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-      align-items: center;
-    }
-
-    .control-group {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .control-group label {
-      font-weight: 600;
-      color: #495057;
-      font-size: 0.95em;
-    }
-
-    input[type="date"] {
-      padding: 10px 15px;
-      border: 2px solid #dee2e6;
-      border-radius: 8px;
-      font-size: 1em;
-      transition: all 0.3s;
-    }
-
-    input[type="date"]:focus {
-      outline: none;
-      border-color: #667eea;
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-
-    .btn {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 8px;
-      font-size: 0.95em;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .btn-reset {
-      background: #dc3545;
-      color: white;
-    }
-
-    .btn-reset:hover {
-      background: #c82333;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
-    }
-
-    .btn-export {
-      background: #28a745;
-      color: white;
-    }
-
-    .btn-export:hover {
-      background: #218838;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    .settings-grid .setting-box:first-child {
+        grid-column: span 2;
     }
 
     .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-      padding: 25px 30px;
-      background: white;
+        grid-template-columns: repeat(3, 1fr);
     }
 
-    .stat-card {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      padding: 20px;
-      border-radius: 12px;
-      color: white;
-      text-align: center;
+    .student-form {
+        grid-template-columns: 1fr 2fr;
     }
 
-    .stat-label {
-      font-size: 0.9em;
-      opacity: 0.9;
-      margin-bottom: 8px;
+    .student-form .form-button,
+    .student-form .cancel-edit-btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 800px) {
+
+    .stats {
+        grid-template-columns: repeat(2, 1fr);
     }
 
-    .stat-value {
-      font-size: 2em;
-      font-weight: 700;
-    }
-
-    .attendance-table-wrapper {
-      padding: 30px;
-      overflow-x: auto;
-    }
-
-    .attendance-table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-    }
-
-    .attendance-table thead {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background: #495057;
-      color: white;
-    }
-
-    .attendance-table th {
-      padding: 15px 10px;
-      text-align: center;
-      font-weight: 600;
-      font-size: 0.95em;
-      border: 1px solid #dee2e6;
-    }
-
-    .attendance-table td {
-      padding: 12px 8px;
-      text-align: center;
-      border: 1px solid #dee2e6;
-    }
-
-    .attendance-table tbody tr:nth-child(even) {
-      background: #f8f9fa;
-    }
-
-    .attendance-table tbody tr:hover {
-      background: #e9ecef;
-    }
-
-    .student-id {
-      font-weight: 600;
-      color: #495057;
-    }
-
-    .hour-btn {
-      width: 60px;
-      height: 40px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 0.85em;
-      transition: all 0.2s;
-      text-transform: uppercase;
-    }
-
-    .hour-btn.present {
-      background: #28a745;
-      color: white;
-    }
-
-    .hour-btn.absent {
-      background: #dc3545;
-      color: white;
-    }
-
-    .hour-btn.unmarked {
-      background: #e9ecef;
-      color: #6c757d;
-    }
-
-    .hour-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
-
-    .student-percentage {
-      font-weight: 600;
-      padding: 8px;
-      border-radius: 6px;
-    }
-
-    .percentage-high {
-      background: #d4edda;
-      color: #155724;
-    }
-
-    .percentage-medium {
-      background: #fff3cd;
-      color: #856404;
-    }
-
-    .percentage-low {
-      background: #f8d7da;
-      color: #721c24;
-    }
-
-    @media (max-width: 768px) {
-      .header h1 {
-        font-size: 1.8em;
-      }
-
-      .controls {
+    .controls {
         flex-direction: column;
         align-items: stretch;
-      }
+    }
 
-      .control-group {
+    .control-left,
+    .control-right {
+        width: 100%;
+    }
+
+    .control-left .btn,
+    .control-right .btn {
+        flex: 1;
+    }
+
+    .management-header {
         flex-direction: column;
-        align-items: stretch;
-      }
+        align-items: flex-start;
+    }
+}
 
-      .stats {
-        grid-template-columns: 1fr;
-      }
+@media (max-width: 700px) {
 
-      .attendance-table-wrapper {
+    body {
+        padding: 8px;
+    }
+
+    .container {
+        border-radius: 12px;
+    }
+
+    .header {
+        padding: 25px 15px;
+    }
+
+    .header h1 {
+        font-size: 2rem;
+    }
+
+    .header p {
+        font-size: .95rem;
+    }
+
+    .settings {
         padding: 15px;
-      }
-
-      .hour-btn {
-        width: 50px;
-        height: 35px;
-        font-size: 0.75em;
-      }
     }
-  </style>
-  <style>@view-transition { navigation: auto; }</style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
-  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
- </head>
- <body>
-  <div class="container">
-   <div class="header">
-    <h1 id="page-title">Attendance Management System</h1>
-    <p id="institution-name">College Attendance Tracker</p>
-   </div>
-   <div class="controls">
-    <div class="control-group"><label for="attendance-date">Select Date:</label> <input type="date" id="attendance-date">
-    </div><button class="btn btn-reset" id="reset-btn">🔄 Reset Today</button> <button class="btn btn-export" id="export-btn">📊 Export CSV</button>
-   </div>
-   <div class="stats">
-    <div class="stat-card">
-     <div class="stat-label">
-      Total Students
-     </div>
-     <div class="stat-value" id="total-students">
-      61
-     </div>
+
+    .settings-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .settings-grid .setting-box:first-child {
+        grid-column: auto;
+    }
+
+    .controls {
+        padding: 15px;
+    }
+
+    .control-left,
+    .control-right {
+        flex-direction: column;
+    }
+
+    .control-left > *,
+    .control-right > * {
+        width: 100%;
+    }
+
+    .date-box {
+        justify-content: space-between;
+    }
+
+    .student-management {
+        padding: 20px 15px;
+    }
+
+    .student-form {
+        grid-template-columns: 1fr;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+        padding: 15px;
+    }
+
+    .table-wrapper {
+        padding: 15px;
+    }
+
+    .privacy-info {
+        font-size: .8rem;
+    }
+
+    .footer {
+        padding: 15px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- ================= HEADER ================= -->
+
+    <header class="header">
+
+        <h1 id="pageTitle">
+            Attendance Management System
+        </h1>
+
+        <p id="institutionTitle">
+            College Attendance Tracker
+        </p>
+
+    </header>
+
+
+    <!-- ================= PRIVACY INFO ================= -->
+
+    <div class="privacy-info">
+
+        🛡️ No student information is built into this application.
+        Student data and attendance are stored locally in this browser.
+
     </div>
-    <div class="stat-card">
-     <div class="stat-label">
-      Total Hours
-     </div>
-     <div class="stat-value" id="total-hours">
-      366
-     </div>
+
+
+    <!-- ================= SETTINGS ================= -->
+
+    <section class="settings">
+
+        <div class="settings-grid">
+
+            <div class="setting-box">
+
+                <label for="institutionInput">
+                    🏫 Institution / Class Name
+                </label>
+
+                <input
+                    type="text"
+                    id="institutionInput"
+                    placeholder="Example: Computer Science - Section A"
+                >
+
+            </div>
+
+
+            <div class="setting-box">
+
+                <label for="hoursInput">
+                    📚 Number of Hours
+                </label>
+
+                <input
+                    type="number"
+                    id="hoursInput"
+                    min="1"
+                    max="20"
+                    value="6"
+                >
+
+            </div>
+
+
+            <div class="setting-box">
+
+                <label for="titleInput">
+                    📝 System Title
+                </label>
+
+                <input
+                    type="text"
+                    id="titleInput"
+                    placeholder="Attendance Management System"
+                >
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= CONTROLS ================= -->
+
+    <section class="controls">
+
+        <div class="control-left">
+
+            <div class="date-box">
+
+                <label for="attendanceDate">
+                    📅 Date:
+                </label>
+
+                <input
+                    type="date"
+                    id="attendanceDate"
+                >
+
+            </div>
+
+
+            <button
+                class="btn btn-primary"
+                onclick="focusStudentForm()"
+            >
+                ➕ Add Student
+            </button>
+
+        </div>
+
+
+        <div class="control-right">
+
+            <button
+                class="btn btn-success"
+                onclick="markAll(true)"
+            >
+                ✓ Mark All Present
+            </button>
+
+
+            <button
+                class="btn btn-danger"
+                onclick="markAll(false)"
+            >
+                ✕ Mark All Absent
+            </button>
+
+
+            <button
+                class="btn btn-warning"
+                onclick="resetToday()"
+            >
+                🔄 Reset Today
+            </button>
+
+
+            <button
+                class="btn btn-dark"
+                onclick="exportCSV()"
+            >
+                📊 Export CSV
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= STUDENT MANAGEMENT ================= -->
+
+    <section class="student-management">
+
+        <div class="management-header">
+
+            <div>
+
+                <h2>
+                    👨‍🎓 Student Management
+                </h2>
+
+                <p>
+                    Add, edit or delete students. Register numbers can contain
+                    numbers, letters or custom formats.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <form
+            class="student-form"
+            id="studentForm"
+        >
+
+            <div class="form-group">
+
+                <label for="studentRegNo">
+                    Register Number
+                </label>
+
+                <input
+                    type="text"
+                    id="studentRegNo"
+                    placeholder="Example: CSE001"
+                    autocomplete="off"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="studentName">
+                    Student Name
+                </label>
+
+                <input
+                    type="text"
+                    id="studentName"
+                    placeholder="Enter student name"
+                    autocomplete="off"
+                    required
+                >
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="btn btn-primary form-button"
+                id="saveStudentButton"
+            >
+                ➕ Add Student
+            </button>
+
+
+            <button
+                type="button"
+                class="btn btn-secondary form-button cancel-edit-btn"
+                id="cancelEditButton"
+                onclick="cancelEdit()"
+            >
+                Cancel Edit
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <!-- ================= STATISTICS ================= -->
+
+    <section class="stats">
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Total Students
+            </div>
+
+            <div
+                class="stat-value"
+                id="totalStudents"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Total Hours
+            </div>
+
+            <div
+                class="stat-value"
+                id="totalHours"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Marked Hours
+            </div>
+
+            <div
+                class="stat-value"
+                id="markedHours"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Present Hours
+            </div>
+
+            <div
+                class="stat-value"
+                id="presentHours"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Attendance
+            </div>
+
+            <div
+                class="stat-value"
+                id="overallPercentage"
+            >
+                0%
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= TABLE ================= -->
+
+    <section class="table-wrapper">
+
+        <table class="attendance-table">
+
+            <thead id="tableHead"></thead>
+
+            <tbody id="attendanceBody"></tbody>
+
+        </table>
+
+
+        <!-- EMPTY STATE -->
+
+        <div
+            class="empty-state"
+            id="emptyState"
+            style="display:none;"
+        >
+
+            <div class="empty-state-icon">
+                👨‍🎓
+            </div>
+
+            <h2>
+                No Students Added
+            </h2>
+
+            <p>
+                Add your first student above to start recording attendance.
+            </p>
+
+            <button
+                class="btn btn-primary"
+                onclick="focusStudentForm()"
+            >
+                ➕ Add Student
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer class="footer">
+
+        Attendance Management System •
+        Data is stored locally in your browser
+
+    </footer>
+
+</div>
+
+
+<!-- ================= CONFIRMATION MODAL ================= -->
+
+<div
+    class="modal-overlay"
+    id="confirmModal"
+    style="display:none;"
+>
+
+    <div class="modal">
+
+        <h2 id="confirmTitle">
+            Confirm Action
+        </h2>
+
+        <p
+            class="modal-description"
+            id="confirmMessage"
+        ></p>
+
+        <div class="modal-actions">
+
+            <button
+                class="btn btn-secondary"
+                onclick="closeConfirm()"
+            >
+                Cancel
+            </button>
+
+            <button
+                class="btn btn-danger"
+                id="confirmButton"
+            >
+                Confirm
+            </button>
+
+        </div>
+
     </div>
-    <div class="stat-card">
-     <div class="stat-label">
-      Hours Present
-     </div>
-     <div class="stat-value" id="hours-present">
-      0
-     </div>
-    </div>
-    <div class="stat-card">
-     <div class="stat-label">
-      Attendance %
-     </div>
-     <div class="stat-value" id="attendance-percentage">
-      0%
-     </div>
-    </div>
-   </div>
-   <div class="attendance-table-wrapper">
-    <table class="attendance-table">
-     <thead>
-      <tr>
-       <th>Register No.</th>
-       <th>Hour 1</th>
-       <th>Hour 2</th>
-       <th>Hour 3</th>
-       <th>Hour 4</th>
-       <th>Hour 5</th>
-       <th>Hour 6</th>
-       <th>Attendance %</th>
-      </tr>
-     </thead>
-     <tbody id="attendance-tbody"><!-- Student rows will be generated here -->
-     </tbody>
-    </table>
-   </div>
-  </div>
-  <script>
-    const defaultConfig = {
-      page_title: "Attendance Management System",
-      institution_name: "College Attendance Tracker"
+
+</div>
+
+
+<!-- ================= TOAST ================= -->
+
+<div
+    class="toast"
+    id="toast"
+></div>
+
+
+<script>
+
+/* ============================================================
+   REUSABLE ATTENDANCE MANAGEMENT SYSTEM
+   ============================================================ */
+
+
+/* ============================================================
+   STORAGE KEYS
+   ============================================================ */
+
+const STUDENTS_KEY =
+    "attendance_management_students_v3";
+
+const SETTINGS_KEY =
+    "attendance_management_settings_v3";
+
+const ATTENDANCE_PREFIX =
+    "attendance_management_date_v3_";
+
+
+/* ============================================================
+   DEFAULT SETTINGS
+   ============================================================ */
+
+const DEFAULT_SETTINGS = {
+
+    title:
+        "Attendance Management System",
+
+    institution:
+        "College Attendance Tracker",
+
+    hours:
+        6
+
+};
+
+
+/* ============================================================
+   APPLICATION STATE
+   ============================================================ */
+
+let students =
+    loadStudents();
+
+let settings =
+    loadSettings();
+
+let currentDate =
+    getToday();
+
+let editingStudentId =
+    null;
+
+let toastTimer =
+    null;
+
+
+/* ============================================================
+   INITIALIZATION
+   ============================================================ */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    initialize
+);
+
+
+function initialize() {
+
+    document.getElementById(
+        "attendanceDate"
+    ).value =
+        currentDate;
+
+
+    document.getElementById(
+        "titleInput"
+    ).value =
+        settings.title;
+
+
+    document.getElementById(
+        "institutionInput"
+    ).value =
+        settings.institution;
+
+
+    document.getElementById(
+        "hoursInput"
+    ).value =
+        settings.hours;
+
+
+    updateHeader();
+
+    renderTable();
+
+    setupEvents();
+
+}
+
+
+/* ============================================================
+   EVENTS
+   ============================================================ */
+
+function setupEvents() {
+
+    document.getElementById(
+        "studentForm"
+    ).addEventListener(
+        "submit",
+        function(event) {
+
+            event.preventDefault();
+
+            saveStudent();
+
+        }
+    );
+
+
+    document.getElementById(
+        "titleInput"
+    ).addEventListener(
+        "input",
+        function() {
+
+            settings.title =
+                this.value.trim();
+
+            saveSettings();
+
+            updateHeader();
+
+        }
+    );
+
+
+    document.getElementById(
+        "institutionInput"
+    ).addEventListener(
+        "input",
+        function() {
+
+            settings.institution =
+                this.value.trim();
+
+            saveSettings();
+
+            updateHeader();
+
+        }
+    );
+
+
+    document.getElementById(
+        "hoursInput"
+    ).addEventListener(
+        "change",
+        function() {
+
+            let hours =
+                parseInt(
+                    this.value,
+                    10
+                );
+
+
+            if (
+                isNaN(hours) ||
+                hours < 1
+            ) {
+
+                hours = 1;
+
+            }
+
+
+            if (hours > 20) {
+
+                hours = 20;
+
+            }
+
+
+            this.value =
+                hours;
+
+
+            if (
+                hours !== settings.hours
+            ) {
+
+                const oldHours =
+                    settings.hours;
+
+                settings.hours =
+                    hours;
+
+                saveSettings();
+
+                resizeAttendanceRecords(
+                    oldHours,
+                    hours
+                );
+
+                renderTable();
+
+                showToast(
+                    `Attendance hours changed to ${hours}.`
+                );
+
+            }
+
+        }
+    );
+
+
+    document.getElementById(
+        "attendanceDate"
+    ).addEventListener(
+        "change",
+        function() {
+
+            currentDate =
+                this.value ||
+                getToday();
+
+            renderTable();
+
+        }
+    );
+
+
+    document.addEventListener(
+        "keydown",
+        function(event) {
+
+            if (
+                event.key === "Escape"
+            ) {
+
+                closeConfirm();
+
+                cancelEdit();
+
+            }
+
+        }
+    );
+
+
+    document.getElementById(
+        "confirmModal"
+    ).addEventListener(
+        "click",
+        function(event) {
+
+            if (
+                event.target === this
+            ) {
+
+                closeConfirm();
+
+            }
+
+        }
+    );
+
+}
+
+
+/* ============================================================
+   DATE
+   ============================================================ */
+
+function getToday() {
+
+    const date =
+        new Date();
+
+
+    const year =
+        date.getFullYear();
+
+
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(2, "0");
+
+
+    const day =
+        String(
+            date.getDate()
+        ).padStart(2, "0");
+
+
+    return `${year}-${month}-${day}`;
+
+}
+
+
+/* ============================================================
+   STUDENT STORAGE
+   ============================================================ */
+
+function loadStudents() {
+
+    try {
+
+        const saved =
+            localStorage.getItem(
+                STUDENTS_KEY
+            );
+
+
+        if (!saved) {
+
+            return [];
+
+        }
+
+
+        const parsed =
+            JSON.parse(saved);
+
+
+        if (!Array.isArray(parsed)) {
+
+            return [];
+
+        }
+
+
+        return parsed.filter(
+            student =>
+                student &&
+                student.id &&
+                typeof student.regNo === "string" &&
+                typeof student.name === "string"
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Could not load students:",
+            error
+        );
+
+        return [];
+
+    }
+
+}
+
+
+function saveStudents() {
+
+    localStorage.setItem(
+        STUDENTS_KEY,
+        JSON.stringify(students)
+    );
+
+}
+
+
+/* ============================================================
+   SETTINGS STORAGE
+   ============================================================ */
+
+function loadSettings() {
+
+    try {
+
+        const saved =
+            localStorage.getItem(
+                SETTINGS_KEY
+            );
+
+
+        if (!saved) {
+
+            return {
+                ...DEFAULT_SETTINGS
+            };
+
+        }
+
+
+        const parsed =
+            JSON.parse(saved);
+
+
+        let hours =
+            parseInt(
+                parsed.hours,
+                10
+            );
+
+
+        if (
+            isNaN(hours) ||
+            hours < 1
+        ) {
+
+            hours =
+                DEFAULT_SETTINGS.hours;
+
+        }
+
+
+        if (hours > 20) {
+
+            hours = 20;
+
+        }
+
+
+        return {
+
+            title:
+                typeof parsed.title === "string"
+                    ? parsed.title
+                    : DEFAULT_SETTINGS.title,
+
+            institution:
+                typeof parsed.institution === "string"
+                    ? parsed.institution
+                    : DEFAULT_SETTINGS.institution,
+
+            hours:
+                hours
+
+        };
+
+    }
+
+    catch {
+
+        return {
+            ...DEFAULT_SETTINGS
+        };
+
+    }
+
+}
+
+
+function saveSettings() {
+
+    localStorage.setItem(
+        SETTINGS_KEY,
+        JSON.stringify(settings)
+    );
+
+}
+
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+
+function updateHeader() {
+
+    document.getElementById(
+        "pageTitle"
+    ).textContent =
+        settings.title ||
+        DEFAULT_SETTINGS.title;
+
+
+    document.getElementById(
+        "institutionTitle"
+    ).textContent =
+        settings.institution ||
+        DEFAULT_SETTINGS.institution;
+
+}
+
+
+/* ============================================================
+   ATTENDANCE STORAGE
+   ============================================================ */
+
+function getAttendanceKey(date) {
+
+    return (
+        ATTENDANCE_PREFIX +
+        date
+    );
+
+}
+
+
+function loadAttendance(date) {
+
+    try {
+
+        const saved =
+            localStorage.getItem(
+                getAttendanceKey(date)
+            );
+
+
+        if (!saved) {
+
+            return {};
+
+        }
+
+
+        const parsed =
+            JSON.parse(saved);
+
+
+        return (
+            parsed &&
+            typeof parsed === "object"
+                ? parsed
+                : {}
+        );
+
+    }
+
+    catch {
+
+        return {};
+
+    }
+
+}
+
+
+function saveAttendance(
+    date,
+    data
+) {
+
+    localStorage.setItem(
+        getAttendanceKey(date),
+        JSON.stringify(data)
+    );
+
+}
+
+
+/* ============================================================
+   ATTENDANCE ARRAY
+   ============================================================ */
+
+function getStudentAttendance(
+    studentId,
+    attendanceData = null
+) {
+
+    const attendance =
+        attendanceData ||
+        loadAttendance(currentDate);
+
+
+    if (
+        !Array.isArray(
+            attendance[studentId]
+        )
+    ) {
+
+        attendance[studentId] =
+            Array(
+                settings.hours
+            ).fill(null);
+
+
+        if (!attendanceData) {
+
+            saveAttendance(
+                currentDate,
+                attendance
+            );
+
+        }
+
+    }
+
+
+    let record =
+        attendance[studentId];
+
+
+    if (
+        record.length !==
+        settings.hours
+    ) {
+
+        const resized =
+            Array(
+                settings.hours
+            ).fill(null);
+
+
+        for (
+            let i = 0;
+            i < Math.min(
+                record.length,
+                settings.hours
+            );
+            i++
+        ) {
+
+            resized[i] =
+                record[i];
+
+        }
+
+
+        attendance[studentId] =
+            resized;
+
+
+        if (!attendanceData) {
+
+            saveAttendance(
+                currentDate,
+                attendance
+            );
+
+        }
+
+
+        record =
+            resized;
+
+    }
+
+
+    return record;
+
+}
+
+
+/* ============================================================
+   RESIZE ATTENDANCE WHEN HOURS CHANGE
+   ============================================================ */
+
+function resizeAttendanceRecords(
+    oldHours,
+    newHours
+) {
+
+    const keys = [];
+
+
+    for (
+        let i = 0;
+        i < localStorage.length;
+        i++
+    ) {
+
+        const key =
+            localStorage.key(i);
+
+
+        if (
+            key &&
+            key.startsWith(
+                ATTENDANCE_PREFIX
+            )
+        ) {
+
+            keys.push(key);
+
+        }
+
+    }
+
+
+    keys.forEach(key => {
+
+        try {
+
+            const saved =
+                localStorage.getItem(key);
+
+
+            const data =
+                saved
+                    ? JSON.parse(saved)
+                    : {};
+
+
+            Object.keys(data)
+                .forEach(studentId => {
+
+                    const oldRecord =
+                        Array.isArray(
+                            data[studentId]
+                        )
+                            ? data[studentId]
+                            : [];
+
+
+                    const newRecord =
+                        Array(
+                            newHours
+                        ).fill(null);
+
+
+                    for (
+                        let i = 0;
+                        i < Math.min(
+                            oldRecord.length,
+                            newHours
+                        );
+                        i++
+                    ) {
+
+                        newRecord[i] =
+                            oldRecord[i];
+
+                    }
+
+
+                    data[studentId] =
+                        newRecord;
+
+                });
+
+
+            localStorage.setItem(
+                key,
+                JSON.stringify(data)
+            );
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Could not resize attendance:",
+                error
+            );
+
+        }
+
+    });
+
+}
+
+
+/* ============================================================
+   TABLE RENDERING
+   ============================================================ */
+
+function renderTable() {
+
+    const tableHead =
+        document.getElementById(
+            "tableHead"
+        );
+
+
+    const tbody =
+        document.getElementById(
+            "attendanceBody"
+        );
+
+
+    const emptyState =
+        document.getElementById(
+            "emptyState"
+        );
+
+
+    tableHead.innerHTML =
+        "";
+
+
+    tbody.innerHTML =
+        "";
+
+
+    /* ---------- EMPTY ---------- */
+
+    if (
+        students.length === 0
+    ) {
+
+        emptyState.style.display =
+            "block";
+
+        updateStats();
+
+        return;
+
+    }
+
+
+    emptyState.style.display =
+        "none";
+
+
+    /* ---------- HEADER ---------- */
+
+    const headerRow =
+        document.createElement(
+            "tr"
+        );
+
+
+    addHeader(
+        headerRow,
+        "Register No."
+    );
+
+
+    addHeader(
+        headerRow,
+        "Student Name"
+    );
+
+
+    for (
+        let hour = 1;
+        hour <= settings.hours;
+        hour++
+    ) {
+
+        addHeader(
+            headerRow,
+            `Hour ${hour}`
+        );
+
+    }
+
+
+    addHeader(
+        headerRow,
+        "Attendance %"
+    );
+
+
+    addHeader(
+        headerRow,
+        "Actions"
+    );
+
+
+    tableHead.appendChild(
+        headerRow
+    );
+
+
+    /* ---------- STUDENTS ---------- */
+
+    const attendance =
+        loadAttendance(
+            currentDate
+        );
+
+
+    students.forEach(
+        student => {
+
+            const row =
+                document.createElement(
+                    "tr"
+                );
+
+
+            /* Register Number */
+
+            const regCell =
+                document.createElement(
+                    "td"
+                );
+
+            regCell.className =
+                "student-id";
+
+            regCell.textContent =
+                student.regNo;
+
+            row.appendChild(
+                regCell
+            );
+
+
+            /* Student Name */
+
+            const nameCell =
+                document.createElement(
+                    "td"
+                );
+
+            nameCell.className =
+                "student-name";
+
+            nameCell.textContent =
+                student.name;
+
+            row.appendChild(
+                nameCell
+            );
+
+
+            /* Attendance */
+
+            const studentAttendance =
+                getStudentAttendance(
+                    student.id,
+                    attendance
+                );
+
+
+            for (
+                let hour = 0;
+                hour < settings.hours;
+                hour++
+            ) {
+
+                const cell =
+                    document.createElement(
+                        "td"
+                    );
+
+
+                const button =
+                    document.createElement(
+                        "button"
+                    );
+
+
+                button.type =
+                    "button";
+
+
+                button.className =
+                    "hour-btn";
+
+
+                updateAttendanceButton(
+                    button,
+                    studentAttendance[hour]
+                );
+
+
+                button.title =
+                    "Click to change attendance";
+
+
+                button.setAttribute(
+                    "aria-label",
+                    `Hour ${hour + 1} attendance for ${student.name}`
+                );
+
+
+                button.addEventListener(
+                    "click",
+                    function() {
+
+                        toggleAttendance(
+                            student.id,
+                            hour
+                        );
+
+                    }
+                );
+
+
+                cell.appendChild(
+                    button
+                );
+
+
+                row.appendChild(
+                    cell
+                );
+
+            }
+
+
+            /* Percentage */
+
+            const percentageCell =
+                document.createElement(
+                    "td"
+                );
+
+
+            const percentage =
+                calculateStudentPercentage(
+                    student.id,
+                    attendance
+                );
+
+
+            percentageCell.className =
+                "percentage " +
+                getPercentageClass(
+                    percentage
+                );
+
+
+            percentageCell.textContent =
+                percentage === null
+                    ? "-"
+                    : `${percentage}%`;
+
+
+            row.appendChild(
+                percentageCell
+            );
+
+
+            /* Actions */
+
+            const actionCell =
+                document.createElement(
+                    "td"
+                );
+
+
+            const actions =
+                document.createElement(
+                    "div"
+                );
+
+
+            actions.className =
+                "action-buttons";
+
+
+            /* Edit */
+
+            const editButton =
+                document.createElement(
+                    "button"
+                );
+
+
+            editButton.type =
+                "button";
+
+
+            editButton.className =
+                "small-btn edit-btn";
+
+
+            editButton.textContent =
+                "✏️ Edit";
+
+
+            editButton.addEventListener(
+                "click",
+                function() {
+
+                    editStudent(
+                        student.id
+                    );
+
+                }
+            );
+
+
+            /* Delete */
+
+            const deleteButton =
+                document.createElement(
+                    "button"
+                );
+
+
+            deleteButton.type =
+                "button";
+
+
+            deleteButton.className =
+                "small-btn delete-btn";
+
+
+            deleteButton.textContent =
+                "🗑️ Delete";
+
+
+            deleteButton.addEventListener(
+                "click",
+                function() {
+
+                    deleteStudent(
+                        student.id
+                    );
+
+                }
+            );
+
+
+            actions.appendChild(
+                editButton
+            );
+
+
+            actions.appendChild(
+                deleteButton
+            );
+
+
+            actionCell.appendChild(
+                actions
+            );
+
+
+            row.appendChild(
+                actionCell
+            );
+
+
+            tbody.appendChild(
+                row
+            );
+
+        }
+    );
+
+
+    /* Save any new attendance records */
+
+    saveAttendance(
+        currentDate,
+        attendance
+    );
+
+
+    updateStats();
+
+}
+
+
+/* ============================================================
+   ADD TABLE HEADER
+   ============================================================ */
+
+function addHeader(
+    row,
+    text
+) {
+
+    const th =
+        document.createElement(
+            "th"
+        );
+
+
+    th.textContent =
+        text;
+
+
+    row.appendChild(
+        th
+    );
+
+}
+
+
+/* ============================================================
+   ATTENDANCE BUTTON
+   ============================================================ */
+
+function updateAttendanceButton(
+    button,
+    state
+) {
+
+    button.classList.remove(
+        "present",
+        "absent",
+        "unmarked"
+    );
+
+
+    if (state === true) {
+
+        button.classList.add(
+            "present"
+        );
+
+        button.textContent =
+            "P";
+
+    }
+
+    else if (state === false) {
+
+        button.classList.add(
+            "absent"
+        );
+
+        button.textContent =
+            "A";
+
+    }
+
+    else {
+
+        button.classList.add(
+            "unmarked"
+        );
+
+        button.textContent =
+            "-";
+
+    }
+
+}
+
+
+/* ============================================================
+   TOGGLE ATTENDANCE
+   ============================================================ */
+
+function toggleAttendance(
+    studentId,
+    hour
+) {
+
+    const attendance =
+        loadAttendance(
+            currentDate
+        );
+
+
+    if (
+        !Array.isArray(
+            attendance[studentId]
+        )
+    ) {
+
+        attendance[studentId] =
+            Array(
+                settings.hours
+            ).fill(null);
+
+    }
+
+
+    const current =
+        attendance[studentId][hour];
+
+
+    /*
+        Unmarked → Present
+        Present  → Absent
+        Absent   → Unmarked
+    */
+
+    if (
+        current === null ||
+        current === undefined
+    ) {
+
+        attendance[studentId][hour] =
+            true;
+
+    }
+
+    else if (
+        current === true
+    ) {
+
+        attendance[studentId][hour] =
+            false;
+
+    }
+
+    else {
+
+        attendance[studentId][hour] =
+            null;
+
+    }
+
+
+    saveAttendance(
+        currentDate,
+        attendance
+    );
+
+
+    renderTable();
+
+}
+
+
+/* ============================================================
+   STUDENT PERCENTAGE
+   ============================================================ */
+
+function calculateStudentPercentage(
+    studentId,
+    attendanceData = null
+) {
+
+    const attendance =
+        getStudentAttendance(
+            studentId,
+            attendanceData
+        );
+
+
+    const marked =
+        attendance.filter(
+            value =>
+                value !== null &&
+                value !== undefined
+        );
+
+
+    if (
+        marked.length === 0
+    ) {
+
+        return null;
+
+    }
+
+
+    const present =
+        marked.filter(
+            value =>
+                value === true
+        ).length;
+
+
+    return (
+        present /
+        marked.length *
+        100
+    ).toFixed(1);
+
+}
+
+
+/* ============================================================
+   PERCENTAGE COLOR
+   ============================================================ */
+
+function getPercentageClass(
+    percentage
+) {
+
+    if (
+        percentage === null
+    ) {
+
+        return "";
+
+    }
+
+
+    const value =
+        parseFloat(
+            percentage
+        );
+
+
+    if (
+        value >= 75
+    ) {
+
+        return "high";
+
+    }
+
+
+    if (
+        value >= 50
+    ) {
+
+        return "medium";
+
+    }
+
+
+    return "low";
+
+}
+
+
+/* ============================================================
+   STATISTICS
+   ============================================================ */
+
+function updateStats() {
+
+    const totalStudents =
+        students.length;
+
+
+    const totalHours =
+        totalStudents *
+        settings.hours;
+
+
+    let markedHours =
+        0;
+
+
+    let presentHours =
+        0;
+
+
+    const attendance =
+        loadAttendance(
+            currentDate
+        );
+
+
+    students.forEach(
+        student => {
+
+            const record =
+                Array.isArray(
+                    attendance[student.id]
+                )
+                    ? attendance[student.id]
+                    : [];
+
+
+            for (
+                let i = 0;
+                i < settings.hours;
+                i++
+            ) {
+
+                const value =
+                    record[i];
+
+
+                if (
+                    value !== null &&
+                    value !== undefined
+                ) {
+
+                    markedHours++;
+
+
+                    if (
+                        value === true
+                    ) {
+
+                        presentHours++;
+
+                    }
+
+                }
+
+            }
+
+        }
+    );
+
+
+    const percentage =
+        markedHours === 0
+            ? "0.0"
+            : (
+                presentHours /
+                markedHours *
+                100
+            ).toFixed(1);
+
+
+    document.getElementById(
+        "totalStudents"
+    ).textContent =
+        totalStudents;
+
+
+    document.getElementById(
+        "totalHours"
+    ).textContent =
+        totalHours;
+
+
+    document.getElementById(
+        "markedHours"
+    ).textContent =
+        markedHours;
+
+
+    document.getElementById(
+        "presentHours"
+    ).textContent =
+        presentHours;
+
+
+    document.getElementById(
+        "overallPercentage"
+    ).textContent =
+        `${percentage}%`;
+
+}
+
+
+/* ============================================================
+   STUDENT FORM
+   ============================================================ */
+
+function focusStudentForm() {
+
+    cancelEdit();
+
+
+    const input =
+        document.getElementById(
+            "studentRegNo"
+        );
+
+
+    input.focus();
+
+
+    document.querySelector(
+        ".student-management"
+    ).scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+
+}
+
+
+/* ============================================================
+   SAVE / UPDATE STUDENT
+   ============================================================ */
+
+function saveStudent() {
+
+    const regInput =
+        document.getElementById(
+            "studentRegNo"
+        );
+
+
+    const nameInput =
+        document.getElementById(
+            "studentName"
+        );
+
+
+    const regNo =
+        regInput.value.trim();
+
+
+    const name =
+        nameInput.value.trim();
+
+
+    /* ---------- VALIDATION ---------- */
+
+    if (!regNo) {
+
+        showToast(
+            "Please enter a register number."
+        );
+
+        regInput.focus();
+
+        return;
+
+    }
+
+
+    if (!name) {
+
+        showToast(
+            "Please enter the student name."
+        );
+
+        nameInput.focus();
+
+        return;
+
+    }
+
+
+    /* ---------- DUPLICATE CHECK ---------- */
+
+    const duplicate =
+        students.find(
+            student =>
+                student.regNo
+                    .trim()
+                    .toLowerCase() ===
+                regNo
+                    .toLowerCase() &&
+                student.id !==
+                editingStudentId
+        );
+
+
+    if (duplicate) {
+
+        showToast(
+            "That register number already exists."
+        );
+
+        regInput.focus();
+
+        return;
+
+    }
+
+
+    /* ---------- EDIT ---------- */
+
+    if (
+        editingStudentId
+    ) {
+
+        const student =
+            students.find(
+                item =>
+                    item.id ===
+                    editingStudentId
+            );
+
+
+        if (!student) {
+
+            showToast(
+                "Student could not be found."
+            );
+
+            cancelEdit();
+
+            return;
+
+        }
+
+
+        student.regNo =
+            regNo;
+
+
+        student.name =
+            name;
+
+
+        saveStudents();
+
+
+        cancelEdit();
+
+
+        renderTable();
+
+
+        showToast(
+            "Student updated successfully."
+        );
+
+
+        return;
+
+    }
+
+
+    /* ---------- ADD ---------- */
+
+    const student = {
+
+        id:
+            createStudentId(),
+
+        regNo:
+            regNo,
+
+        name:
+            name
+
     };
 
-    // Constants
-    const TOTAL_STUDENTS = 61;
-    const TOTAL_HOURS = 6;
-    const START_REGISTER = 101;
-    const END_REGISTER = 161;
 
-    // Initialize date input with today's date
-    const dateInput = document.getElementById('attendance-date');
-    dateInput.valueAsDate = new Date();
+    students.push(
+        student
+    );
 
-    // Initialize attendance data structure
-    let currentDate = dateInput.value;
 
-    // Load attendance from localStorage
-    function loadAttendance(date) {
-      const saved = localStorage.getItem(`attendance_${date}`);
-      if (saved) {
-        return JSON.parse(saved);
-      }
-      
-      // Initialize empty attendance for all students
-      const attendance = {};
-      for (let i = START_REGISTER; i <= END_REGISTER; i++) {
-        attendance[i] = Array(TOTAL_HOURS).fill(null); // null = unmarked, true = present, false = absent
-      }
-      return attendance;
+    saveStudents();
+
+
+    /* Create attendance record for current date */
+
+    const attendance =
+        loadAttendance(
+            currentDate
+        );
+
+
+    attendance[student.id] =
+        Array(
+            settings.hours
+        ).fill(null);
+
+
+    saveAttendance(
+        currentDate,
+        attendance
+    );
+
+
+    clearStudentForm();
+
+
+    renderTable();
+
+
+    showToast(
+        "Student added successfully."
+    );
+
+}
+
+
+/* ============================================================
+   CREATE UNIQUE STUDENT ID
+   ============================================================ */
+
+function createStudentId() {
+
+    if (
+        window.crypto &&
+        typeof window.crypto.randomUUID ===
+        "function"
+    ) {
+
+        return window.crypto.randomUUID();
+
     }
 
-    // Save attendance to localStorage
-    function saveAttendance(date, data) {
-      localStorage.setItem(`attendance_${date}`, JSON.stringify(data));
-    }
 
-    // Current attendance data
-    let attendanceData = loadAttendance(currentDate);
+    return (
+        Date.now().toString(36) +
+        "-" +
+        Math.random()
+            .toString(36)
+            .substring(2, 10)
+    );
 
-    // Generate attendance table rows
-    function generateTable() {
-      const tbody = document.getElementById('attendance-tbody');
-      tbody.innerHTML = '';
+}
 
-      for (let regNo = START_REGISTER; regNo <= END_REGISTER; regNo++) {
-        const tr = document.createElement('tr');
-        
-        // Register number cell
-        const tdRegNo = document.createElement('td');
-        tdRegNo.className = 'student-id';
-        tdRegNo.textContent = regNo;
-        tr.appendChild(tdRegNo);
 
-        // Hour cells
-        for (let hour = 0; hour < TOTAL_HOURS; hour++) {
-          const td = document.createElement('td');
-          const btn = document.createElement('button');
-          btn.className = 'hour-btn';
-          btn.dataset.regNo = regNo;
-          btn.dataset.hour = hour;
-          
-          updateButtonState(btn, attendanceData[regNo][hour]);
-          
-          btn.addEventListener('click', () => {
-            toggleAttendance(regNo, hour, btn);
-          });
-          
-          td.appendChild(btn);
-          tr.appendChild(td);
-        }
+/* ============================================================
+   EDIT STUDENT
+   ============================================================ */
 
-        // Student percentage cell
-        const tdPercentage = document.createElement('td');
-        tdPercentage.className = 'student-percentage';
-        tdPercentage.id = `student-${regNo}-percentage`;
-        updateStudentPercentage(regNo, tdPercentage);
-        tr.appendChild(tdPercentage);
+function editStudent(
+    studentId
+) {
 
-        tbody.appendChild(tr);
-      }
+    const student =
+        students.find(
+            item =>
+                item.id ===
+                studentId
+        );
 
-      updateStats();
-    }
 
-    // Update button appearance based on state
-    function updateButtonState(btn, state) {
-      if (state === true) {
-        btn.className = 'hour-btn present';
-        btn.textContent = 'P';
-      } else if (state === false) {
-        btn.className = 'hour-btn absent';
-        btn.textContent = 'A';
-      } else {
-        btn.className = 'hour-btn unmarked';
-        btn.textContent = '-';
-      }
-    }
+    if (!student) {
 
-    // Toggle attendance for a student's hour
-    function toggleAttendance(regNo, hour, btn) {
-      const currentState = attendanceData[regNo][hour];
-      
-      // Cycle through: unmarked -> present -> absent -> unmarked
-      if (currentState === null) {
-        attendanceData[regNo][hour] = true; // Present
-      } else if (currentState === true) {
-        attendanceData[regNo][hour] = false; // Absent
-      } else {
-        attendanceData[regNo][hour] = null; // Unmarked
-      }
+        showToast(
+            "Student not found."
+        );
 
-      updateButtonState(btn, attendanceData[regNo][hour]);
-      saveAttendance(currentDate, attendanceData);
-      
-      // Update student percentage
-      const percentageCell = document.getElementById(`student-${regNo}-percentage`);
-      updateStudentPercentage(regNo, percentageCell);
-      
-      updateStats();
-    }
-
-    // Update student's individual percentage
-    function updateStudentPercentage(regNo, cell) {
-      const studentHours = attendanceData[regNo];
-      const presentCount = studentHours.filter(h => h === true).length;
-      const totalMarked = studentHours.filter(h => h !== null).length;
-      
-      if (totalMarked === 0) {
-        cell.textContent = '-';
-        cell.className = 'student-percentage';
         return;
-      }
 
-      const percentage = ((presentCount / totalMarked) * 100).toFixed(1);
-      cell.textContent = `${percentage}%`;
-      
-      // Color code based on percentage
-      if (percentage >= 75) {
-        cell.className = 'student-percentage percentage-high';
-      } else if (percentage >= 50) {
-        cell.className = 'student-percentage percentage-medium';
-      } else {
-        cell.className = 'student-percentage percentage-low';
-      }
     }
 
-    // Update overall statistics
-    function updateStats() {
-      let totalPresent = 0;
-      let totalMarked = 0;
 
-      for (let regNo = START_REGISTER; regNo <= END_REGISTER; regNo++) {
-        for (let hour = 0; hour < TOTAL_HOURS; hour++) {
-          if (attendanceData[regNo][hour] !== null) {
-            totalMarked++;
-            if (attendanceData[regNo][hour] === true) {
-              totalPresent++;
+    editingStudentId =
+        studentId;
+
+
+    document.getElementById(
+        "studentRegNo"
+    ).value =
+        student.regNo;
+
+
+    document.getElementById(
+        "studentName"
+    ).value =
+        student.name;
+
+
+    document.getElementById(
+        "saveStudentButton"
+    ).textContent =
+        "💾 Update Student";
+
+
+    document.getElementById(
+        "saveStudentButton"
+    ).className =
+        "btn btn-success form-button";
+
+
+    document.getElementById(
+        "cancelEditButton"
+    ).style.display =
+        "block";
+
+
+    document.querySelector(
+        ".student-management"
+    ).scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+
+
+    document.getElementById(
+        "studentRegNo"
+    ).focus();
+
+}
+
+
+/* ============================================================
+   CANCEL EDIT
+   ============================================================ */
+
+function cancelEdit() {
+
+    editingStudentId =
+        null;
+
+
+    clearStudentForm();
+
+
+    document.getElementById(
+        "saveStudentButton"
+    ).textContent =
+        "➕ Add Student";
+
+
+    document.getElementById(
+        "saveStudentButton"
+    ).className =
+        "btn btn-primary form-button";
+
+
+    document.getElementById(
+        "cancelEditButton"
+    ).style.display =
+        "none";
+
+}
+
+
+/* ============================================================
+   CLEAR FORM
+   ============================================================ */
+
+function clearStudentForm() {
+
+    document.getElementById(
+        "studentRegNo"
+    ).value =
+        "";
+
+
+    document.getElementById(
+        "studentName"
+    ).value =
+        "";
+
+}
+
+
+/* ============================================================
+   DELETE STUDENT
+   ============================================================ */
+
+function deleteStudent(
+    studentId
+) {
+
+    const student =
+        students.find(
+            item =>
+                item.id ===
+                studentId
+        );
+
+
+    if (!student) {
+
+        return;
+
+    }
+
+
+    showConfirm(
+
+        "Delete Student?",
+
+        `Delete ${student.name} (${student.regNo})? This will also remove this student's saved attendance records from this browser.`,
+
+        function() {
+
+            students =
+                students.filter(
+                    item =>
+                        item.id !==
+                        studentId
+                );
+
+
+            saveStudents();
+
+
+            deleteStudentAttendance(
+                studentId
+            );
+
+
+            if (
+                editingStudentId ===
+                studentId
+            ) {
+
+                cancelEdit();
+
             }
-          }
+
+
+            renderTable();
+
+
+            showToast(
+                "Student deleted successfully."
+            );
+
         }
-      }
 
-      const totalPossibleHours = TOTAL_STUDENTS * TOTAL_HOURS;
-      const overallPercentage = totalMarked > 0 ? ((totalPresent / totalMarked) * 100).toFixed(1) : 0;
+    );
 
-      document.getElementById('total-students').textContent = TOTAL_STUDENTS;
-      document.getElementById('total-hours').textContent = totalPossibleHours;
-      document.getElementById('hours-present').textContent = totalPresent;
-      document.getElementById('attendance-percentage').textContent = `${overallPercentage}%`;
+}
+
+
+/* ============================================================
+   DELETE STUDENT'S ATTENDANCE FROM ALL DATES
+   ============================================================ */
+
+function deleteStudentAttendance(
+    studentId
+) {
+
+    const keys = [];
+
+
+    for (
+        let i = 0;
+        i < localStorage.length;
+        i++
+    ) {
+
+        const key =
+            localStorage.key(i);
+
+
+        if (
+            key &&
+            key.startsWith(
+                ATTENDANCE_PREFIX
+            )
+        ) {
+
+            keys.push(key);
+
+        }
+
     }
 
-    // Reset attendance for current date
-    document.getElementById('reset-btn').addEventListener('click', () => {
-      const confirmReset = document.createElement('div');
-      confirmReset.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); z-index: 1000; text-align: center;';
-      confirmReset.innerHTML = `
-        <h3 style="margin-bottom: 15px; color: #dc3545;">Reset Attendance?</h3>
-        <p style="margin-bottom: 20px; color: #6c757d;">This will clear all attendance data for ${currentDate}</p>
-        <button id="confirm-reset" class="btn btn-reset" style="margin-right: 10px;">Yes, Reset</button>
-        <button id="cancel-reset" class="btn" style="background: #6c757d; color: white;">Cancel</button>
-      `;
-      
-      const overlay = document.createElement('div');
-      overlay.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999;';
-      
-      document.body.appendChild(overlay);
-      document.body.appendChild(confirmReset);
-      
-      document.getElementById('confirm-reset').addEventListener('click', () => {
-        attendanceData = loadAttendance(currentDate);
-        for (let regNo = START_REGISTER; regNo <= END_REGISTER; regNo++) {
-          attendanceData[regNo] = Array(TOTAL_HOURS).fill(null);
-        }
-        saveAttendance(currentDate, attendanceData);
-        generateTable();
-        document.body.removeChild(overlay);
-        document.body.removeChild(confirmReset);
-      });
-      
-      document.getElementById('cancel-reset').addEventListener('click', () => {
-        document.body.removeChild(overlay);
-        document.body.removeChild(confirmReset);
-      });
-    });
 
-    // Export to CSV
-    document.getElementById('export-btn').addEventListener('click', () => {
-      let csv = 'Register No,Hour 1,Hour 2,Hour 3,Hour 4,Hour 5,Hour 6,Attendance %\n';
-      
-      for (let regNo = START_REGISTER; regNo <= END_REGISTER; regNo++) {
-        const row = [regNo];
-        const studentHours = attendanceData[regNo];
-        
-        // Add hour status
-        for (let hour = 0; hour < TOTAL_HOURS; hour++) {
-          const state = studentHours[hour];
-          row.push(state === true ? 'P' : state === false ? 'A' : '-');
-        }
-        
-        // Calculate percentage
-        const presentCount = studentHours.filter(h => h === true).length;
-        const totalMarked = studentHours.filter(h => h !== null).length;
-        const percentage = totalMarked > 0 ? ((presentCount / totalMarked) * 100).toFixed(1) : 0;
-        row.push(`${percentage}%`);
-        
-        csv += row.join(',') + '\n';
-      }
-      
-      // Add summary row
-      let totalPresent = 0;
-      let totalMarked = 0;
-      for (let regNo = START_REGISTER; regNo <= END_REGISTER; regNo++) {
-        for (let hour = 0; hour < TOTAL_HOURS; hour++) {
-          if (attendanceData[regNo][hour] !== null) {
-            totalMarked++;
-            if (attendanceData[regNo][hour] === true) {
-              totalPresent++;
+    keys.forEach(
+        key => {
+
+            try {
+
+                const saved =
+                    localStorage.getItem(
+                        key
+                    );
+
+
+                if (!saved) {
+
+                    return;
+
+                }
+
+
+                const data =
+                    JSON.parse(
+                        saved
+                    );
+
+
+                if (
+                    Object.prototype.hasOwnProperty.call(
+                        data,
+                        studentId
+                    )
+                ) {
+
+                    delete data[
+                        studentId
+                    ];
+
+
+                    localStorage.setItem(
+                        key,
+                        JSON.stringify(data)
+                    );
+
+                }
+
             }
-          }
+
+            catch {
+
+                /* Ignore corrupted records */
+
+            }
+
         }
-      }
-      const overallPercentage = totalMarked > 0 ? ((totalPresent / totalMarked) * 100).toFixed(1) : 0;
-      csv += `\nOverall Stats,,,,,,,\n`;
-      csv += `Total Students,${TOTAL_STUDENTS},,,,,,\n`;
-      csv += `Total Hours Conducted,${totalMarked},,,,,,\n`;
-      csv += `Total Hours Present,${totalPresent},,,,,,\n`;
-      csv += `Overall Attendance %,${overallPercentage}%,,,,,,\n`;
-      
-      // Download CSV
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `attendance_${currentDate}.csv`;
-      a.click();
-      window.URL.revokeObjectURL(url);
-    });
+    );
 
-    // Date change handler
-    dateInput.addEventListener('change', (e) => {
-      currentDate = e.target.value;
-      attendanceData = loadAttendance(currentDate);
-      generateTable();
-    });
+}
 
-    // Element SDK implementation
-    async function onConfigChange(config) {
-      const titleElement = document.getElementById('page-title');
-      const institutionElement = document.getElementById('institution-name');
-      
-      titleElement.textContent = config.page_title || defaultConfig.page_title;
-      institutionElement.textContent = config.institution_name || defaultConfig.institution_name;
+
+/* ============================================================
+   MARK ALL PRESENT / ABSENT
+   ============================================================ */
+
+function markAll(
+    state
+) {
+
+    if (
+        students.length === 0
+    ) {
+
+        showToast(
+            "Add students first."
+        );
+
+        return;
+
     }
 
-    function mapToCapabilities(config) {
-      return {
-        recolorables: [],
-        borderables: [],
-        fontEditable: undefined,
-        fontSizeable: undefined
-      };
+
+    const action =
+        state
+            ? "present"
+            : "absent";
+
+
+    showConfirm(
+
+        `Mark Everyone ${state ? "Present" : "Absent"}?`,
+
+        `This will mark all ${students.length} students as ${action} for all ${settings.hours} hours on ${currentDate}. Existing attendance for this date will be replaced.`,
+
+        function() {
+
+            const attendance =
+                loadAttendance(
+                    currentDate
+                );
+
+
+            students.forEach(
+                student => {
+
+                    attendance[
+                        student.id
+                    ] =
+                        Array(
+                            settings.hours
+                        ).fill(state);
+
+                }
+            );
+
+
+            saveAttendance(
+                currentDate,
+                attendance
+            );
+
+
+            renderTable();
+
+
+            showToast(
+                `Everyone marked ${action}.`
+            );
+
+        }
+
+    );
+
+}
+
+
+/* ============================================================
+   RESET TODAY
+   ============================================================ */
+
+function resetToday() {
+
+    if (
+        students.length === 0
+    ) {
+
+        showToast(
+            "There is no attendance to reset."
+        );
+
+        return;
+
     }
 
-    function mapToEditPanelValues(config) {
-      return new Map([
-        ["page_title", config.page_title || defaultConfig.page_title],
-        ["institution_name", config.institution_name || defaultConfig.institution_name]
-      ]);
+
+    showConfirm(
+
+        "Reset Attendance?",
+
+        `Clear all attendance records for ${currentDate}? Student details will NOT be deleted.`,
+
+        function() {
+
+            localStorage.removeItem(
+                getAttendanceKey(
+                    currentDate
+                )
+            );
+
+
+            renderTable();
+
+
+            showToast(
+                "Attendance reset successfully."
+            );
+
+        }
+
+    );
+
+}
+
+
+/* ============================================================
+   EXPORT CSV
+   ============================================================ */
+
+function exportCSV() {
+
+    if (
+        students.length === 0
+    ) {
+
+        showToast(
+            "Add students before exporting."
+        );
+
+        return;
+
     }
 
-    if (window.elementSdk) {
-      window.elementSdk.init({
-        defaultConfig,
-        onConfigChange,
-        mapToCapabilities,
-        mapToEditPanelValues
-      });
+
+    const attendance =
+        loadAttendance(
+            currentDate
+        );
+
+
+    let csv =
+        "";
+
+
+    /* ---------- FILE INFORMATION ---------- */
+
+    csv +=
+        `"System Title","${escapeCSV(settings.title)}"\n`;
+
+    csv +=
+        `"Institution / Class","${escapeCSV(settings.institution)}"\n`;
+
+    csv +=
+        `"Date","${currentDate}"\n`;
+
+    csv +=
+        "\n";
+
+
+    /* ---------- HEADER ---------- */
+
+    csv +=
+        `"Register No","Student Name"`;
+
+
+    for (
+        let hour = 1;
+        hour <= settings.hours;
+        hour++
+    ) {
+
+        csv +=
+            `,"Hour ${hour}"`;
+
     }
 
-    // Initialize table on load
-    generateTable();
-  </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9ba0d1d826d56eef',t:'MTc2Nzc2MTI3NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+
+    csv +=
+        `,"Attendance %"\n`;
+
+
+    /* ---------- STUDENTS ---------- */
+
+    students.forEach(
+        student => {
+
+            const record =
+                Array.isArray(
+                    attendance[
+                        student.id
+                    ]
+                )
+                    ? attendance[
+                        student.id
+                    ]
+                    : Array(
+                        settings.hours
+                    ).fill(null);
+
+
+            csv +=
+                `"${escapeCSV(student.regNo)}","${escapeCSV(student.name)}"`;
+
+
+            for (
+                let hour = 0;
+                hour < settings.hours;
+                hour++
+            ) {
+
+                const value =
+                    record[hour];
+
+
+                let status =
+                    "-";
+
+
+                if (
+                    value === true
+                ) {
+
+                    status =
+                        "P";
+
+                }
+
+                else if (
+                    value === false
+                ) {
+
+                    status =
+                        "A";
+
+                }
+
+
+                csv +=
+                    `,"${status}"`;
+
+            }
+
+
+            const percentage =
+                calculateStudentPercentage(
+                    student.id,
+                    attendance
+                );
+
+
+            csv +=
+                `,"${
+                    percentage === null
+                        ? "-"
+                        : percentage + "%"
+                }"`;
+
+
+            csv +=
+                "\n";
+
+        }
+    );
+
+
+    /* ---------- SUMMARY ---------- */
+
+    let marked =
+        0;
+
+
+    let present =
+        0;
+
+
+    students.forEach(
+        student => {
+
+            const record =
+                Array.isArray(
+                    attendance[
+                        student.id
+                    ]
+                )
+                    ? attendance[
+                        student.id
+                    ]
+                    : [];
+
+
+            record.forEach(
+                value => {
+
+                    if (
+                        value !== null &&
+                        value !== undefined
+                    ) {
+
+                        marked++;
+
+
+                        if (
+                            value === true
+                        ) {
+
+                            present++;
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+    const overall =
+        marked === 0
+            ? "0.0"
+            : (
+                present /
+                marked *
+                100
+            ).toFixed(1);
+
+
+    csv +=
+        "\n";
+
+
+    csv +=
+        "Overall Statistics\n";
+
+
+    csv +=
+        `"Total Students","${students.length}"\n`;
+
+
+    csv +=
+        `"Hours Per Student","${settings.hours}"\n`;
+
+
+    csv +=
+        `"Total Possible Hours","${students.length * settings.hours}"\n`;
+
+
+    csv +=
+        `"Marked Hours","${marked}"\n`;
+
+
+    csv +=
+        `"Present Hours","${present}"\n`;
+
+
+    csv +=
+        `"Overall Attendance","${overall}%"\n`;
+
+
+    /* ---------- DOWNLOAD ---------- */
+
+    const blob =
+        new Blob(
+            [
+                "\uFEFF" + csv
+            ],
+            {
+                type:
+                    "text/csv;charset=utf-8;"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(
+            blob
+        );
+
+
+    const link =
+        document.createElement(
+            "a"
+        );
+
+
+    link.href =
+        url;
+
+
+    link.download =
+        `attendance_${currentDate}.csv`;
+
+
+    document.body.appendChild(
+        link
+    );
+
+
+    link.click();
+
+
+    document.body.removeChild(
+        link
+    );
+
+
+    URL.revokeObjectURL(
+        url
+    );
+
+
+    showToast(
+        "Attendance exported successfully."
+    );
+
+}
+
+
+/* ============================================================
+   CSV ESCAPE
+   ============================================================ */
+
+function escapeCSV(
+    value
+) {
+
+    return String(
+        value ?? ""
+    )
+        .replace(
+            /"/g,
+            '""'
+        );
+
+}
+
+
+/* ============================================================
+   CONFIRMATION MODAL
+   ============================================================ */
+
+function showConfirm(
+    title,
+    message,
+    callback
+) {
+
+    document.getElementById(
+        "confirmTitle"
+    ).textContent =
+        title;
+
+
+    document.getElementById(
+        "confirmMessage"
+    ).textContent =
+        message;
+
+
+    document.getElementById(
+        "confirmModal"
+    ).style.display =
+        "flex";
+
+
+    const confirmButton =
+        document.getElementById(
+            "confirmButton"
+        );
+
+
+    confirmButton.onclick =
+        function() {
+
+            closeConfirm();
+
+            callback();
+
+        };
+
+}
+
+
+function closeConfirm() {
+
+    document.getElementById(
+        "confirmModal"
+    ).style.display =
+        "none";
+
+}
+
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+
+function showToast(
+    message
+) {
+
+    const toast =
+        document.getElementById(
+            "toast"
+        );
+
+
+    toast.textContent =
+        message;
+
+
+    toast.classList.add(
+        "show"
+    );
+
+
+    clearTimeout(
+        toastTimer
+    );
+
+
+    toastTimer =
+        setTimeout(
+            function() {
+
+                toast.classList.remove(
+                    "show"
+                );
+
+            },
+            2800
+        );
+
+}
+
+</script>
+
+</body>
 </html>
